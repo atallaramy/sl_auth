@@ -1,7 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import Navbar from './components/Navbar'
-import ReduxProvider from '@/redux/Provider'
+import ReduxProvider from '@/redux/provider'
 
 
 export const metadata: Metadata = {

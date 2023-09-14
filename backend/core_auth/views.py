@@ -14,47 +14,6 @@ from .authentication import (
 )
 
 
-class RegisterAPIView(APIView):
-    def post(self, request):
-        data = request.data
-        if data["password"] != data["password_confirm"]:
-            raise exceptions.APIException("Passwords do not match!")
-        serializer = UserSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(serializer.data)
-
-
-class LoginAPIView(APIView):
-    def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
-
-        user = CustomUser.objects.filter(email=email).first()
-        if user is None:
-            raise exceptions.AuthenticationFailed("Invalid Credentials, Try Again")
-
-        if not user.check_password(password):
-            raise exceptions.AuthenticationFailed("Invalid Credentials, Try Again")
-
-        access_token = create_access_token(user.id)
-        refresh_token = create_refresh_token(user.id)
-
-        UserToken.objects.create(
-            user_id=user.id,
-            token=refresh_token,
-            # check if the expiring time need to be added manulally.
-            expired_at=datetime.datetime.utcnow() + datetime.timedelta(days=30),
-        )
-
-        response = Response()
-        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
-        response.data = {"access_token": access_token}
-
-        return response
-
-
 class UserAPIView(APIView):
     authentication_classes = [JWTAuthentication]
 

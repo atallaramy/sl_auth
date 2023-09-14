@@ -2,11 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 
 interface AuthState {
-    value: boolean
+    value: string
 }
 
 const initialState: AuthState = {
-    value: false,
+    value: localStorage.getItem('access_token') || '',
 }
 
 // Create the slice
@@ -14,11 +14,13 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setAuth: (state) => {
-            state.value = true
+        setAuth: (state, action) => {
+            state.value = action.payload
+            localStorage.setItem('access_token', action.payload)
         },
         logout: (state) => {
-            state.value = false
+            state.value = ''
+            localStorage.clear()
         }
     }
 })

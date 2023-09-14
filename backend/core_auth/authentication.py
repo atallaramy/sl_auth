@@ -29,7 +29,7 @@ def create_access_token(id):
     return jwt.encode(
         {
             "user_id": id,
-            "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=60),
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=10),
             "iat": datetime.datetime.utcnow(),
         },
         ACCESS_SECRET,
@@ -51,6 +51,7 @@ def create_refresh_token(id):
 
 def decode_access_token(token):
     try:
+        print("access token to decode: ", token)
         payload = jwt.decode(token, ACCESS_SECRET, algorithms=["HS256"])
         return payload["user_id"]
     except:
